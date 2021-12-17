@@ -16,8 +16,10 @@ class Board constructor(context: Context, attributeSet: AttributeSet) : View(con
         paint.strokeWidth = 10f
         paint.textSize = 100f
     }
-
     private var numbers = listOf<List<Int>>()
+
+    val height_size : Int
+        get() = height / numbers.size
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -25,7 +27,7 @@ class Board constructor(context: Context, attributeSet: AttributeSet) : View(con
         var linex = 0f
         for(i in numbers.indices) {
             for(z in numbers[i]) {
-                val y : Float = i * height.toFloat() / 5f
+                val y : Float = i * height_size.toFloat()
                 val x : Float = numbers[i].indexOf(z) * width.toFloat() / 5f
                 println("$x $y")
                 canvas.drawText(z.toString(), x, y, paint)
@@ -50,7 +52,7 @@ class Board constructor(context: Context, attributeSet: AttributeSet) : View(con
         setOnTouchListener { _, event ->
             listener(
                 (event.x / (width * 5)).roundToInt(),
-                ((event.y - 1) / 110).roundToInt()
+                event.y.toInt() / height_size
             )
             true
         }
