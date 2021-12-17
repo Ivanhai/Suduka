@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.roundToInt
 
 class Board constructor(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
     private val paint = Paint()
@@ -24,17 +25,18 @@ class Board constructor(context: Context, attributeSet: AttributeSet) : View(con
         var linex = 0f
         for(i in numbers.indices) {
             for(z in numbers[i]) {
-                val y : Float = (i + 1) * 100f
-                val x : Float = numbers[i].indexOf(z) * 110f
+                val y : Float = i * height.toFloat() / 5f
+                val x : Float = numbers[i].indexOf(z) * width.toFloat() / 5f
+                println("$x $y")
                 canvas.drawText(z.toString(), x, y, paint)
             }
         }
         for(i in 0..3) {
-            liney += height / 5
+            liney += height / numbers.size
             canvas.drawLine(0f, liney, width.toFloat(), liney, paint)
         }
         for(i in 0..3) {
-            linex += width / 5
+            linex += width / numbers[1].size
             canvas.drawLine(linex, 0f, linex, height.toFloat(), paint)
         }
     }
@@ -47,8 +49,8 @@ class Board constructor(context: Context, attributeSet: AttributeSet) : View(con
     fun setOnClickPlaceListener(listener : (x : Int, y : Int) -> Unit) {
         setOnTouchListener { _, event ->
             listener(
-                (event.x / 25).toInt(),
-                (event.y / 25).toInt()
+                (event.x / (width * 5)).roundToInt(),
+                ((event.y - 1) / 110).roundToInt()
             )
             true
         }
