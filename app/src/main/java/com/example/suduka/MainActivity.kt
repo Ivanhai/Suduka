@@ -10,15 +10,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val board = findViewById<Board>(R.id.board)
-        numbers = mutableListOf(
-            mutableListOf(1, 2, 3, 4,5),
-            mutableListOf(2, 1, 4, 3,5),
-            mutableListOf(1, 2, 3, 4,5),
-            mutableListOf(2, 1, 4, 3,5))
+        numbers = MutableList(9){
+            MutableList(9){
+                0
+            }
+        }
         board.drawNumber(numbers)
         board.setOnClickPlaceListener { x,y ->
-            numbers[y][x] = 1
-            board.drawNumber(numbers)
+            val alert = Alert{
+                numbers[y][x] = it
+                board.drawNumber(numbers)
+            }
+            alert.show(supportFragmentManager, "numbers")
         }
     }
 }
