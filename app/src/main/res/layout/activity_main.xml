@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.example.suduka.Board
-        android:id="@+id/board"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+<!--    <com.example.suduka.Board-->
+<!--        android:id="@+id/board"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
