@@ -1,10 +1,12 @@
 package com.example.suduka
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Base64
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import com.example.suduka.DataClasses.UserRequest
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -20,25 +22,40 @@ import javax.crypto.spec.SecretKeySpec
 
 @DelicateCoroutinesApi
 class EnterActivity : AppCompatActivity() {
-    private val userApi = UserApi(ktorHttpClient)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val context = this
+        val intent = Intent(context, FindSession::class.java)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enter)
 
         val button = findViewById<Button>(R.id.button)
+        val checkBox = findViewById<CheckBox>(R.id.checkBox)
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
+
+        if(sharedPref.contains("1") && sharedPref.contains("2")) {
+            val email = sharedPref.getString("1", null) ?: throw(Throwable("null error"))
+            val password = sharedPref.getString("2", null) ?: throw(Throwable("null error"))
+            GlobalScope.launch(Dispatchers.IO) {
+                val token = userApi.Login(UserRequest(email, password))
+                intent.putExtra("token", token.token)
+                startActivity(intent)
+            }
+        }
+
         button.setOnClickListener {
             val email = findViewById<TextView>(R.id.editTextTextEmailAddress)
             val password = findViewById<TextView>(R.id.editTextTextPassword)
             if(email.text.isEmpty()) email.error = "Empty email" else if(password.text.isEmpty()) password.error = "Empty password" else {
                 GlobalScope.launch(Dispatchers.IO) {
                     val token = userApi.Login(UserRequest(email.text.toString(), password.text.toString()))
-                    if(token.token != null) {
+                    if(token.token != null && checkBox.isChecked) {
                         with(sharedPref.edit()) {
                             putString("1", AESEncyption.encrypt(email.text.toString()))
                             putString("2", AESEncyption.encrypt(password.text.toString()))
                         }
                     }
+                    intent.putExtra("token", token.token)
+                    startActivity(intent)
                 }
             }
         }

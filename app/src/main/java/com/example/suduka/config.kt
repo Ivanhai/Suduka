@@ -1,6 +1,8 @@
 package com.example.suduka
 
 
+import com.example.suduka.DataClasses.CreateRoomEntity
+import com.example.suduka.DataClasses.CreateRoomRequest
 import com.example.suduka.DataClasses.UserEntity
 import com.example.suduka.DataClasses.UserRequest
 import io.ktor.client.HttpClient
@@ -40,4 +42,11 @@ class UserApi(private val client: HttpClient) {
     suspend fun Login(user : UserRequest) : UserEntity = client.post("$baseUrl/login") {
         body = user
     }
+    suspend fun createRoom(data : CreateRoomRequest) : CreateRoomEntity = client.post("$baseUrl/create") {
+        body = data
+        headers["Authorization"] = "Bearer ${data.token}"
+    }
+
 }
+
+val userApi = UserApi(ktorHttpClient)
