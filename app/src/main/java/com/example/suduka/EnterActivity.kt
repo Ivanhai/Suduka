@@ -33,8 +33,8 @@ class EnterActivity : AppCompatActivity() {
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
 
         if(sharedPref.contains("1") && sharedPref.contains("2")) {
-            val email = sharedPref.getString("1", null) ?: throw(Throwable("null error"))
-            val password = sharedPref.getString("2", null) ?: throw(Throwable("null error"))
+            val email = AESEncyption.decrypt(sharedPref.getString("1", null) ?: throw(Throwable("null error")) ) ?: throw(Throwable("null error"))
+            val password = AESEncyption.decrypt(sharedPref.getString("2", null) ?: throw(Throwable("null error"))) ?: throw(Throwable("null error"))
             GlobalScope.launch(Dispatchers.IO) {
                 val token = userApi.Login(UserRequest(email, password))
                 intent.putExtra("token", token.token)

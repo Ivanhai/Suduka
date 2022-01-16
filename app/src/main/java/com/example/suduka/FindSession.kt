@@ -16,15 +16,21 @@ class FindSession() : AppCompatActivity() {
 
         val token = intent.extras?.getString("token")
         val joinButton = findViewById<Button>(R.id.joinButton)
+        val idtext = findViewById<TextView>(R.id.editTextSession).text
         joinButton.setOnClickListener {
-            println(token)
+            GlobalScope.launch(Dispatchers.IO) {
+                if (token != null) {
+                    userApi.joinRoom(idtext.toString(), token)
+                }
+            }
         }
         val createButton = findViewById<Button>(R.id.createButton)
         val size = findViewById<TextView>(R.id.editTextBoxSize)
         createButton.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
-                val id = userApi.createRoom(CreateRoomRequest(token ?: throw(Throwable("null error")), size.text.toString().toInt()))
+                val id = userApi.createRoom(CreateRoomRequest(size.text.toString().toInt()), token ?: throw(Throwable("null error")))
                 println(id.id)
+                userApi.joinRoom(id.id, token)
             }
         }
     }
