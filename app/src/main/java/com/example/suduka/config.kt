@@ -15,13 +15,13 @@ import io.ktor.client.features.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.security.Security
 
 private const val TIME_OUT = 60_000
 
 private const val baseUrl = "https://sudokos.herokuapp.com"
-private const val baseWebSocketUrl = "sudokos.herokuapp.com"
 
 private val ktorHttpClient = HttpClient(Android) {
     install(JsonFeature) {
@@ -41,7 +41,7 @@ private val ktorHttpClient = HttpClient(Android) {
     }
 }
 
-private val ktorSocketClient = HttpClient(CIO) {
+val ktorSocketClient = HttpClient(CIO) {
     install(WebSockets)
 }
 
@@ -58,22 +58,6 @@ class UserApi(private val client: HttpClient) {
         body = size
         headers["Authorization"] = "Bearer $token"
     }
-    suspend fun joinRoom(id : String, token: String) {
-        ktorSocketClient.webSocket(method = HttpMethod.Get, host = "${baseWebSocketUrl}", port=80, path = "/join/$id", request = {header("Authorization", "Bearer $token")}) {
-            for(frame in incoming) {
-                when(frame) {
-                    is Frame.Text -> {
-                        val text = frame.readText()
-                        println(text)
-                    }
-                    else -> {
-                        throw(Throwable("not text"))
-                    }
-                }
-            }
-        }
-    }
-
 }
 
 val userApi = UserApi(ktorHttpClient)

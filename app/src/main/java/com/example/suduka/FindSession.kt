@@ -1,5 +1,6 @@
 package com.example.suduka
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -15,12 +16,15 @@ class FindSession() : AppCompatActivity() {
         setContentView(R.layout.activity_find_session)
 
         val token = intent.extras?.getString("token")
+        val intent = Intent(this, BoardActivity::class.java)
         val joinButton = findViewById<Button>(R.id.joinButton)
         val idtext = findViewById<TextView>(R.id.editTextSession).text
         joinButton.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 if (token != null) {
-                    userApi.joinRoom(idtext.toString(), token)
+                    intent.putExtra("id", idtext)
+                    intent.putExtra("token", token)
+                    startActivity(intent)
                 }
             }
         }
@@ -29,8 +33,9 @@ class FindSession() : AppCompatActivity() {
         createButton.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 val id = userApi.createRoom(CreateRoomRequest(size.text.toString().toInt()), token ?: throw(Throwable("null error")))
-                println(id.id)
-                userApi.joinRoom(id.id, token)
+                intent.putExtra("id", id.id)
+                intent.putExtra("token", token)
+                startActivity(intent)
             }
         }
     }
