@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.example.suduka.DataClasses.CreateRoomRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class FindSession() : AppCompatActivity() {
@@ -20,7 +21,7 @@ class FindSession() : AppCompatActivity() {
         val joinButton = findViewById<Button>(R.id.joinButton)
         val idtext = findViewById<TextView>(R.id.editTextSession).text
         joinButton.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
+            MainScope().launch(Dispatchers.IO) {
                 if (token != null) {
                     intent.putExtra("id", idtext)
                     intent.putExtra("token", token)
@@ -31,7 +32,7 @@ class FindSession() : AppCompatActivity() {
         val createButton = findViewById<Button>(R.id.createButton)
         val size = findViewById<TextView>(R.id.editTextBoxSize)
         createButton.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
+            MainScope().launch(Dispatchers.IO) {
                 val id = userApi.createRoom(CreateRoomRequest(size.text.toString().toInt()), token ?: throw(Throwable("null error")))
                 intent.putExtra("id", id.id)
                 intent.putExtra("token", token)

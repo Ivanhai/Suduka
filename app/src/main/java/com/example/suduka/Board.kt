@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 
 class Board constructor(context: Context, attributeSet: AttributeSet) :
@@ -31,7 +32,6 @@ class Board constructor(context: Context, attributeSet: AttributeSet) :
             for (x in numbers[y].indices) {
                 val y1: Float = y * heightSize.toFloat() + heightSize.toFloat()
                 val x1: Float = x * widthSize.toFloat()
-                println("$x1 $y1")
                 canvas.drawText(numbers[y][x].toString(), x1, y1, paint)
             }
         }
@@ -63,10 +63,12 @@ class Board constructor(context: Context, attributeSet: AttributeSet) :
     @SuppressLint("ClickableViewAccessibility")
     fun setOnClickPlaceListener(listener: (x: Int, y: Int) -> Unit) {
         setOnTouchListener { _, event ->
-            listener(
-                event.x.toInt() / widthSize,
-                event.y.toInt() / heightSize
-            )
+            if(event.action == MotionEvent.ACTION_DOWN) {
+                listener(
+                    event.x.toInt() / widthSize,
+                    event.y.toInt() / heightSize
+                )
+            }
             true
         }
     }

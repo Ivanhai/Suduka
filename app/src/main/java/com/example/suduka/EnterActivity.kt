@@ -9,10 +9,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import com.example.suduka.DataClasses.UserRequest
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.lang.Exception
 import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
@@ -20,7 +17,6 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
-@DelicateCoroutinesApi
 class EnterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val context = this
@@ -35,7 +31,7 @@ class EnterActivity : AppCompatActivity() {
         if(sharedPref.contains("1") && sharedPref.contains("2")) {
             val email = AESEncyption.decrypt(sharedPref.getString("1", null) ?: throw(Throwable("null error")) ) ?: throw(Throwable("null error"))
             val password = AESEncyption.decrypt(sharedPref.getString("2", null) ?: throw(Throwable("null error"))) ?: throw(Throwable("null error"))
-            GlobalScope.launch(Dispatchers.IO) {
+            MainScope().launch(Dispatchers.IO) {
                 val token = userApi.Login(UserRequest(email, password))
                 intent.putExtra("token", token.token)
                 startActivity(intent)
@@ -46,7 +42,7 @@ class EnterActivity : AppCompatActivity() {
             val email = findViewById<TextView>(R.id.editTextTextEmailAddress)
             val password = findViewById<TextView>(R.id.editTextTextPassword)
             if(email.text.isEmpty()) email.error = "Empty email" else if(password.text.isEmpty()) password.error = "Empty password" else {
-                GlobalScope.launch(Dispatchers.IO) {
+                MainScope().launch(Dispatchers.IO) {
                     val token = userApi.Login(UserRequest(email.text.toString(), password.text.toString()))
                     if(token.token != null && checkBox.isChecked) {
                         with(sharedPref.edit()) {
