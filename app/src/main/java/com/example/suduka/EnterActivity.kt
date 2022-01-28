@@ -48,7 +48,7 @@ class EnterActivity : AppCompatActivity() {
                         with(sharedPref.edit()) {
                             putString("1", AESEncyption.encrypt(email.text.toString()))
                             putString("2", AESEncyption.encrypt(password.text.toString()))
-                        }
+                        }.commit()
                     }
                     intent.putExtra("token", token.token)
                     startActivity(intent)

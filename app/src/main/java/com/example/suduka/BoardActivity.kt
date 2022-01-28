@@ -3,6 +3,8 @@ package com.example.suduka
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -28,17 +30,19 @@ class BoardActivity : AppCompatActivity() {
         val id = intent.extras?.getString("id")
 
         val board = findViewById<Board>(R.id.board)
+        val status = findViewById<TextView>(R.id.statusView)
+        status.text = "session id - $id\nplayers - 1"
         board.drawNumber(numbers)
 
         MainScope().launch(Dispatchers.IO) {
             if (token != null && id != null) {
-                join(id, token, board, supportFragmentManager)
+                join(id, token, board, supportFragmentManager, status)
             }
         }
     }
 }
 
-suspend fun join(id: String, token: String, board : Board, supportFragmentManager : FragmentManager) {
+suspend fun join(id: String, token: String, board : Board, supportFragmentManager : FragmentManager, status: TextView) {
     ktorSocketClient.webSocket(method = HttpMethod.Get, host = "sudokos.herokuapp.com", port=80, path = "/join/$id", request = {header("Authorization", "Bearer $token")}) {
         board.setOnClickPlaceListener { x,y ->
             val alert = Alert{
@@ -54,13 +58,30 @@ suspend fun join(id: String, token: String, board : Board, supportFragmentManage
             when(frame) {
                 is Frame.Text -> {
                     val text = frame.readText()
-                    if(text.contains("[")) {
-                        numbers = Json.decodeFromString(text)
-                        board.drawNumber(numbers)
-                    } else if(text.contains("you win!")) {
-                        val myDialogFragment = MyDialogFragment()
-                        val manager = supportFragmentManager
-                        myDialogFragment.show(manager, "myDialog")
+                    val json = Json.decodeFromString<Map<String, String>>(text)
+                    when(json["type"]) {
+                        "board" -> {
+                            numbers = Json.decodeFromString(json["board"]!!)
+                            board.drawNumber(numbers)
+                        }
+                        "winner" -> {
+                            val myDialogFragment = WinDialogFragment()
+                            val manager = supportFragmentManager
+                            myDialogFragment.show(manager, "win")
+                        }
+                        "lose" -> {
+                            val myDialogFragment = LoseDialogFragment()
+                            val manager = supportFragmentManager
+                            myDialogFragment.show(manager, "lose")
+                        }
+                        "joined" -> {
+                            status.text = "${json["uuid"]} joined, now players - ${json["size"]}"
+                            if(json["size"]?.toInt()!! >= 2) {
+                                status.text = "loading game..."
+                                status.visibility = View.GONE
+                                board.visibility = View.VISIBLE
+                            }
+                        }
                     }
                 }
                 else -> {
@@ -71,12 +92,27 @@ suspend fun join(id: String, token: String, board : Board, supportFragmentManage
     }
 }
 
-class MyDialogFragment : DialogFragment() {
+class WinDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             builder.setTitle("Вы выиграли")
                 .setMessage("рейтинг + 1!")
+                .setPositiveButton("ОК") { dialog, id ->
+                    dialog.cancel()
+                    it.finish()
+                }
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+}
+
+class LoseDialogFragment : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.setTitle("Вы проиграли")
+                .setMessage("рейтинг - 1!")
                 .setPositiveButton("ОК") { dialog, id ->
                     dialog.cancel()
                     it.finish()
