@@ -13,10 +13,7 @@ import io.ktor.client.features.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -45,7 +42,7 @@ class BoardActivity : AppCompatActivity() {
 suspend fun join(id: String, token: String, board : Board, supportFragmentManager : FragmentManager, status: TextView) {
     ktorSocketClient.webSocket(method = HttpMethod.Get, host = "sudokos.herokuapp.com", port=80, path = "/join/$id", request = {header("Authorization", "Bearer $token")}) {
         board.setOnClickPlaceListener { x,y ->
-            val alert = Alert{
+            val alert = Alert(numbers.size){
                 MainScope().launch(Dispatchers.IO) {
                     outgoing.send(Frame.Text("put $y $x $it"))
                 }
@@ -59,6 +56,7 @@ suspend fun join(id: String, token: String, board : Board, supportFragmentManage
                 is Frame.Text -> {
                     val text = frame.readText()
                     val json = Json.decodeFromString<Map<String, String>>(text)
+                    println(json)
                     when(json["type"]) {
                         "board" -> {
                             numbers = Json.decodeFromString(json["board"]!!)
@@ -75,11 +73,14 @@ suspend fun join(id: String, token: String, board : Board, supportFragmentManage
                             myDialogFragment.show(manager, "lose")
                         }
                         "joined" -> {
-                            status.text = "${json["uuid"]} joined, now players - ${json["size"]}"
-                            if(json["size"]?.toInt()!! >= 2) {
-                                status.text = "loading game..."
-                                status.visibility = View.GONE
-                                board.visibility = View.VISIBLE
+                            println(json)
+                            withContext(Dispatchers.Main) {
+                                status.text = "${json["uuid"]} joined, now players - ${json["size"]}"
+                                if(json["size"]?.toInt()!! >= 2) {
+                                    status.text = "loading game..."
+                                    status.visibility = View.GONE
+                                    board.visibility = View.VISIBLE
+                                }
                             }
                         }
                     }

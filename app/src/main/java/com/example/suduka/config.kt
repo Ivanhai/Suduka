@@ -8,7 +8,7 @@ import com.example.suduka.DataClasses.UserRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.DefaultRequest
+import io.ktor.client.features.*
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.websocket.*
@@ -56,6 +56,9 @@ class UserApi(private val client: HttpClient) {
     }
     suspend fun createRoom(size : CreateRoomRequest, token : String) : CreateRoomEntity = client.post("$baseUrl/create") {
         body = size
+        headers["Authorization"] = "Bearer $token"
+    }
+    suspend fun getGames(token: String) : HashMap<String, Any> = client.get("$baseUrl/games") {
         headers["Authorization"] = "Bearer $token"
     }
 }

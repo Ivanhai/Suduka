@@ -13,13 +13,12 @@ class Board constructor(context: Context, attributeSet: AttributeSet) :
     View(context, attributeSet) {
     private val paint = Paint()
 
+    private var numbers = mutableListOf<MutableList<Int>>()
+
     init {
         paint.color = Color.BLACK
         paint.strokeWidth = 10f
-        paint.textSize = 100f
     }
-
-    private var numbers = mutableListOf<MutableList<Int>>()
 
     private val heightSize: Int
         get() = height / numbers.size
@@ -28,6 +27,7 @@ class Board constructor(context: Context, attributeSet: AttributeSet) :
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        paint.textSize = (400 / numbers.size).toFloat()
         for (y in numbers.indices) {
             for (x in numbers[y].indices) {
                 val y1: Float = y * heightSize.toFloat() + heightSize.toFloat()

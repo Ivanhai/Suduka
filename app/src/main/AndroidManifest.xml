@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Suduka">
         <activity
+            android:name=".GamesActivity"
+            android:exported="false" />
+        <activity
             android:name=".BoardActivity"
             android:exported="true" />
         <activity

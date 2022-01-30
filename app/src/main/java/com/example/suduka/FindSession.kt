@@ -19,15 +19,21 @@ class FindSession() : AppCompatActivity() {
         val token = intent.extras?.getString("token")
         val intent = Intent(this, BoardActivity::class.java)
         val joinButton = findViewById<Button>(R.id.joinButton)
+        val gamesListButton = findViewById<Button>(R.id.buttonGames)
         val idtext = findViewById<TextView>(R.id.editTextSession).text
         joinButton.setOnClickListener {
             MainScope().launch(Dispatchers.IO) {
                 if (token != null) {
-                    intent.putExtra("id", idtext)
+                    intent.putExtra("id", idtext.toString())
                     intent.putExtra("token", token)
                     startActivity(intent)
                 }
             }
+        }
+        gamesListButton.setOnClickListener {
+            val games = Intent(this, GamesActivity::class.java)
+            games.putExtra("token", token)
+            startActivity(games)
         }
         val createButton = findViewById<Button>(R.id.createButton)
         val size = findViewById<TextView>(R.id.editTextBoxSize)

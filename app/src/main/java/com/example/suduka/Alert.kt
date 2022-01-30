@@ -7,14 +7,16 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 
 class Alert(
+    val n : Int,
     val answer : (a: Int) -> Unit
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        println(n)
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             builder.setTitle("choose number")
                 .setItems(
-                    arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9"),
+                    Array(n) { (it + 1).toString()},
                     DialogInterface.OnClickListener { _, which ->
                         answer(which + 1)
                     })
