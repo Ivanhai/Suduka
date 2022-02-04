@@ -1,10 +1,7 @@
 package com.example.suduka
 
 
-import com.example.suduka.DataClasses.CreateRoomEntity
-import com.example.suduka.DataClasses.CreateRoomRequest
-import com.example.suduka.DataClasses.UserEntity
-import com.example.suduka.DataClasses.UserRequest
+import com.example.suduka.DataClasses.*
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.engine.cio.*
@@ -58,7 +55,7 @@ class UserApi(private val client: HttpClient) {
         body = size
         headers["Authorization"] = "Bearer $token"
     }
-    suspend fun getGames(token: String) : HashMap<String, Any> = client.get("$baseUrl/games") {
+    suspend fun getGames(token: String) : GamesEntity = client.get("$baseUrl/games") {
         headers["Authorization"] = "Bearer $token"
     }
 }
