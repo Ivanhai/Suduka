@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.util.Base64
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.Switch
 import android.widget.TextView
+import com.ivanhai.suduka.DataClasses.UserEntity
 import com.ivanhai.suduka.DataClasses.UserRequest
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -26,6 +28,7 @@ class EnterActivity : AppCompatActivity() {
 
         val button = findViewById<Button>(R.id.button)
         val checkBox = findViewById<CheckBox>(R.id.checkBox)
+        val registrationSwitch = findViewById<Switch>(R.id.switchRegistration)
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
 
         if(sharedPref.contains("1") && sharedPref.contains("2")) {
@@ -43,7 +46,12 @@ class EnterActivity : AppCompatActivity() {
             val password = findViewById<TextView>(R.id.editTextTextPassword)
             if(email.text.isEmpty()) email.error = "Empty email" else if(password.text.isEmpty()) password.error = "Empty password" else {
                 MainScope().launch(Dispatchers.IO) {
-                    val token = userApi.Login(UserRequest(email.text.toString(), password.text.toString()))
+                    var token: UserEntity?
+                    if(registrationSwitch.isChecked) {
+                        token = userApi.Register(UserRequest(email.text.toString(), password.text.toString()))
+                    } else {
+                        token = userApi.Login(UserRequest(email.text.toString(), password.text.toString()))
+                    }
                     if(token.token != null && checkBox.isChecked) {
                         with(sharedPref.edit()) {
                             putString("1", AESEncyption.encrypt(email.text.toString()))

@@ -45,7 +45,9 @@ class UserApi(private val client: HttpClient) {
         System.setProperty("io.ktor.random.secure.random.provider", "DRBG")
         Security.setProperty("securerandom.drbg.config", "HMAC_DBRG,SHA-512,256,pr_and_reseed")
     }
-    suspend fun Register() : UserEntity = client.post("$baseUrl/register")
+    suspend fun Register(user : UserRequest) : UserEntity = client.post("$baseUrl/register") {
+        body = user
+    }
     suspend fun Login(user : UserRequest) : UserEntity = client.post("$baseUrl/login") {
         body = user
     }
