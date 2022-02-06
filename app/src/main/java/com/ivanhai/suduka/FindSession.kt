@@ -1,13 +1,12 @@
-package com.example.suduka
+package com.ivanhai.suduka
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import com.example.suduka.DataClasses.CreateRoomRequest
+import com.ivanhai.suduka.DataClasses.CreateRoomRequest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 

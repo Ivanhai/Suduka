@@ -8,7 +8,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.suduka"
+        applicationId "com.ivanhai.suduka"
         minSdk 29
         targetSdk 31
         versionCode 1

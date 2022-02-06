@@ -1,4 +1,4 @@
-package com.example.suduka
+package com.ivanhai.suduka
 
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.example.suduka.DataClasses.CreateRoomRequest
 import io.ktor.client.features.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*

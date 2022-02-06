@@ -1,4 +1,4 @@
-package com.example.suduka
+package com.ivanhai.suduka
 
 import android.annotation.SuppressLint
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.example.suduka.DataClasses
+package com.ivanhai.suduka.DataClasses
 
 import kotlinx.serialization.Serializable
 

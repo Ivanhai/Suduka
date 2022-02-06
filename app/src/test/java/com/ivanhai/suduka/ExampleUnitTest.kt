@@ -1,4 +1,4 @@
-package com.example.suduka
+package com.ivanhai.suduka
 
 import org.junit.Test
 

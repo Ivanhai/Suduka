@@ -1,7 +1,7 @@
-package com.example.suduka
+package com.ivanhai.suduka
 
 
-import com.example.suduka.DataClasses.*
+import com.ivanhai.suduka.DataClasses.*
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.engine.cio.*
@@ -11,8 +11,6 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.websocket.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.http.cio.websocket.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.security.Security
 

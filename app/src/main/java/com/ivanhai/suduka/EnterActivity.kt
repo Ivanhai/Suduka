@@ -1,4 +1,4 @@
-package com.example.suduka
+package com.ivanhai.suduka
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.util.Base64
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
-import com.example.suduka.DataClasses.UserRequest
+import com.ivanhai.suduka.DataClasses.UserRequest
 import kotlinx.coroutines.*
 import java.lang.Exception
 import javax.crypto.Cipher

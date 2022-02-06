@@ -1,4 +1,4 @@
-package com.example.suduka
+package com.ivanhai.suduka
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

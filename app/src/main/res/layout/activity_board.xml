@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".BoardActivity">
 
-        <com.example.suduka.Board
+        <com.ivanhai.suduka.Board
             android:id="@+id/board"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
